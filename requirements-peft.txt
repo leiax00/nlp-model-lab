@@ -1,0 +1,4 @@
+# 参数高效微调依赖（LoRA、QLoRA 等）
+peft>=0.6.0
+bitsandbytes>=0.41.0  # 用于量化
+scipy>=1.11.0

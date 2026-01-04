@@ -1,0 +1,4 @@
+# 分布式训练加速依赖
+accelerate>=0.24.0
+deepspeed>=0.11.0
+flash-attn>=2.3.0  # Flash Attention（需要 CUDA）

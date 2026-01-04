@@ -1,0 +1,57 @@
+# 客服意图识别实验配置
+# 基于BERT的中文意图分类
+
+# 继承基础配置
+base_config: "../base/intent_classification/bert-base-chinese.yaml"
+
+# 实验信息
+experiment:
+  name: "intent_classification_customer_service"
+  description: "基于BERT-base-chinese的客服领域意图识别"
+  tags: ["intent", "classification", "bert", "customer_service"]
+
+# 模型配置
+model:
+  num_labels: 10  # 假设有10个意图类别
+
+# 数据配置
+data:
+  train_file: "./data/processed/intent_train.json"
+  val_file: "./data/processed/intent_val.json"
+  test_file: "./data/processed/intent_test.json"
+
+  # 标签映射（可选，也可以从数据中自动提取）
+  label_map:
+    0: "query_balance"
+    1: "transfer_money"
+    2: "bill_payment"
+    3: "card_loss"
+    4: "password_reset"
+    5: "account_opening"
+    6: "investment_consultation"
+    7: "complaint"
+    8: "human_service"
+    9: "greeting"
+
+# 训练配置（覆盖基础配置）
+training:
+  num_epochs: 5
+  batch_size: 32
+  learning_rate: 3.0e-5
+  warmup_ratio: 0.1
+
+  # 实验特定输出
+  output_dir: "./outputs/exp_001_bert_intent"
+
+# Wandb配置（可选）
+wandb:
+  enabled: true
+  project: "nlp-model-lab"
+  entity: null  # 你的wandb用户名
+  run_name: "bert_intent_classification"
+
+# 数据增强配置（可选）
+augmentation:
+  enabled: false
+  methods: ["synonym_replacement", "random_insert"]
+  aug_factor: 0.1  # 10%的数据进行增强

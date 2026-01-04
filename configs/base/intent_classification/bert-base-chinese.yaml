@@ -1,0 +1,58 @@
+# BERT中文意图识别基础配置
+model:
+  name: "bert-base-chinese"
+  path: "bert-base-chinese"  # 可选：huggingface模型路径或本地路径
+  num_labels: null  # 在具体实验配置中设置
+  dropout: 0.1
+  attention_dropout: 0.1
+
+data:
+  max_length: 128
+  truncation: true
+  padding: "max_length"
+  train_file: null  # 在具体实验配置中设置
+  val_file: null
+  test_file: null
+  text_column: "text"
+  label_column: "intent"
+
+training:
+  # 训练策略
+  strategy: "full"  # full, lora, adapter
+
+  # 训练参数
+  num_epochs: 10
+  batch_size: 32
+  gradient_accumulation_steps: 1
+  learning_rate: 2.0e-5
+  weight_decay: 0.01
+  warmup_ratio: 0.1
+  max_grad_norm: 1.0
+
+  # 优化器
+  optimizer: "adamw"
+  scheduler: "linear"  # linear, cosine, polynomial
+
+  # 早停
+  early_stopping_patience: 3
+  early_stopping_threshold: 0.001
+
+  # 保存
+  save_strategy: "epoch"  # epoch, steps, no
+  save_total_limit: 3
+  eval_strategy: "epoch"
+  logging_steps: 10
+
+  # 其他
+  fp16: false
+  gradient_checkpointing: false
+  load_best_model_at_end: true
+  metric_for_best_model: "eval_f1"
+
+output:
+  output_dir: "./outputs"
+  logging_dir: "./outputs/logs"
+  overwrite_output_dir: true
+
+# 随机种子
+seed: 42
