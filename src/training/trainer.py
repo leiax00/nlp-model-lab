@@ -103,7 +103,7 @@ class IntentClassificationTrainer(BaseTrainer):
             max_grad_norm=self.training_config.get("max_grad_norm", 1.0),
 
             # 评估和保存
-            evaluation_strategy=self.training_config.get("eval_strategy", "epoch"),
+            eval_strategy=self.training_config.get("eval_strategy", "epoch"),
             save_strategy=self.training_config.get("save_strategy", "epoch"),
             save_total_limit=self.training_config.get("save_total_limit", 3),
             load_best_model_at_end=self.training_config.get("load_best_model_at_end", True),

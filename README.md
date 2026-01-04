@@ -128,8 +128,7 @@ python -m src.data.preprocessors
 
 ```bash
 # 使用默认配置训练
-python scripts/train/train_intent_classification.py \
-    --config configs/experiments/intent_classification_customer_service.yaml
+python scripts/train/train_intent_classification.py --config configs/experiments/intent_classification_customer_service.yaml
 
 # 调试模式（使用少量数据快速测试）
 python scripts/train/train_intent_classification.py \

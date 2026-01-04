@@ -15,7 +15,7 @@ from transformers import PreTrainedTokenizer
 class IntentExample:
     """意图识别样本"""
     text: str
-    label: int
+    label: str  # 标签名称（字符串）
     label_name: str = ""
 
 
@@ -88,11 +88,14 @@ class IntentClassificationDataset(Dataset):
             return_tensors=None
         )
 
+        # 将标签名称转换为整数ID
+        label_id = self.label2id[example.label]
+
         # 返回模型输入
         return {
             "input_ids": encoding["input_ids"],
             "attention_mask": encoding["attention_mask"],
-            "labels": example.label,
+            "labels": label_id,
             "text": example.text
         }
 

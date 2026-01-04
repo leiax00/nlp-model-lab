@@ -9,6 +9,9 @@ import json
 import os
 from pathlib import Path
 
+# 解决 OpenMP 库冲突问题
+os.environ["KMP_DUPLICATE_LIB_OK"] = "TRUE"
+
 import torch
 from transformers import AutoTokenizer, AutoModelForSequenceClassification, set_seed
 
@@ -22,15 +25,45 @@ from src.training import IntentClassificationTrainer, compute_metrics
 
 
 def load_config(config_path: str) -> dict:
-    """加载配置文件"""
-    with open(config_path, 'r', encoding='utf-8') as f:
-        config = json.load(f) if config_path.endswith('.json') else json.loads(f.read())
+    """加载配置文件，支持base_config继承"""
+    import yaml
+    from copy import deepcopy
 
-    # 如果是YAML，需要使用yaml库
+    def _merge_dict(base: dict, override: dict) -> dict:
+        """递归合并字典，override中的值会覆盖base中的值"""
+        result = deepcopy(base)
+        for key, value in override.items():
+            if key in result and isinstance(result[key], dict) and isinstance(value, dict):
+                result[key] = _merge_dict(result[key], value)
+            else:
+                result[key] = deepcopy(value)
+        return result
+
+    # 加载主配置文件
     if config_path.endswith('.yaml') or config_path.endswith('.yml'):
-        import yaml
         with open(config_path, 'r', encoding='utf-8') as f:
             config = yaml.safe_load(f)
+    elif config_path.endswith('.json'):
+        with open(config_path, 'r', encoding='utf-8') as f:
+            config = json.load(f)
+    else:
+        raise ValueError(f"不支持的配置文件格式: {config_path}")
+
+    # 如果配置中指定了base_config，先加载基础配置
+    if 'base_config' in config:
+        base_config_path = config['base_config']
+
+        # 处理相对路径
+        if not os.path.isabs(base_config_path):
+            config_dir = os.path.dirname(config_path)
+            base_config_path = os.path.join(config_dir, base_config_path)
+
+        print(f"加载基础配置: {base_config_path}")
+        base_config = load_config(base_config_path)
+
+        # 移除base_config字段后合并
+        config_without_base = {k: v for k, v in config.items() if k != 'base_config'}
+        config = _merge_dict(base_config, config_without_base)
 
     return config
 

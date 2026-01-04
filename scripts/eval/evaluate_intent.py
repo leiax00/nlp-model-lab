@@ -8,7 +8,11 @@
 """
 import argparse
 import json
+import os
 from pathlib import Path
+
+# 解决 OpenMP 库冲突问题
+os.environ["KMP_DUPLICATE_LIB_OK"] = "TRUE"
 
 import numpy as np
 import torch
