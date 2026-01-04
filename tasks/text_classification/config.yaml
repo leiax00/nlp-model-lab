@@ -1,0 +1,28 @@
+model:
+  pretrained_model: hfl/chinese-bert-wwm-ext
+  num_labels: 3
+  max_length: 64
+
+data:
+  train_file: data/examples/text_classification/train.jsonl
+  dev_file: data/examples/text_classification/dev.jsonl
+  text_column: text
+  label_column: label
+
+labels:
+  label_map: label_maps/intent_labels.json
+
+training:
+  output_dir: checkpoints/text_classification
+  learning_rate: 2e-5
+  batch_size: 16
+  num_epochs: 3
+  logging_steps: 10
+  eval_strategy: epoch
+  save_strategy: epoch
+  seed: 42
+
+inference:
+  confidence_threshold: 0.6
+  unknown_label_name: unknown
+  unknown_label_id: -1

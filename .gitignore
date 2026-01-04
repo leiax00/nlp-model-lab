@@ -1,0 +1,5 @@
+checkpoints/
+data/raw/
+__pycache__/
+*.pt
+*.bin
